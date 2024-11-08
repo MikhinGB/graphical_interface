@@ -82,7 +82,9 @@ class DrawingApp:
         self.draw = ImageDraw.Draw(self.image)
 
     def choose_color(self):
-        self.pen_color = colorchooser.askcolor(color=self.pen_color_in)[1]
+        self.clicks = 0
+        self.pen_color_in = colorchooser.askcolor(color=self.pen_color_in)[1]
+        self.pen_color = self.pen_color_in
 
     def save_image(self):
         file_path = filedialog.asksaveasfilename(filetypes=[('PNG files', '*.png')])
