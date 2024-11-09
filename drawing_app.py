@@ -12,7 +12,7 @@ class DrawingApp:
         self.root = root
         self.root.title("Рисовалка с сохранением в PNG")
 
-        self.image = Image.new("RGB", (600, 400), "white")
+        self.image = Image.new("RGB", (600, 400), 'white')
         self.draw = ImageDraw.Draw(self.image)
 
         self.canvas_color = 'white'
@@ -27,6 +27,8 @@ class DrawingApp:
 
         self.canvas.bind('<B1-Motion>', self.paint)
         self.canvas.bind('<ButtonRelease-1>', self.reset)
+
+        self.canvas.bind('<Button-3>', self.pick_color)
 
     def setup_ui(self):
         control_frame = tk.Frame(self.root)
@@ -65,7 +67,6 @@ class DrawingApp:
         self.last_x = event.x
         self.last_y = event.y
 
-
     def click_button(self):
         self.clicks += 1
         if self.clicks % 2 == 0:
@@ -84,6 +85,29 @@ class DrawingApp:
     def choose_color(self):
         self.clicks = 0
         self.pen_color_in = colorchooser.askcolor(color=self.pen_color_in)[1]
+        self.pen_color = self.pen_color_in
+
+    def pick_color(self, event):
+        r = '';  g = ''; b = ''
+
+        self.clicks = 0
+        x = event.x
+        y = event.y
+
+        r_g_b = self.image.getpixel((x, y))
+        for i in range(3):
+            x = str(hex(r_g_b[i]))
+            if len(x) == 3:
+                x = x + '0'
+            x = x[2:4]
+            if i == 0:
+                r = x
+            elif i == 1:
+                g = x
+            else:
+                b = x
+        r_g_b = '#' + r + g + b
+        self.pen_color_in = r_g_b
         self.pen_color = self.pen_color_in
 
     def save_image(self):
