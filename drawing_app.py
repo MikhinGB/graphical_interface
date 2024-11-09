@@ -43,7 +43,7 @@ class DrawingApp:
         save_button = tk.Button(control_frame, text="Сохранить", command=self.save_image)
         save_button.pack(side=tk.LEFT)
 
-        self.eraser_button = tk.Button(control_frame, text="Ластик", command=self.click_button)
+        self.eraser_button = tk.Button(control_frame, text="Ластик", command=self.erase)
         self.eraser_button.pack(side=tk.RIGHT)
 
         self.brush_size_scale = tk.Scale(control_frame, from_=1, to=10, orient=tk.HORIZONTAL)
@@ -67,7 +67,14 @@ class DrawingApp:
         self.last_x = event.x
         self.last_y = event.y
 
-    def click_button(self):
+    def erase(self):
+        """ Эта функция вызывается при однократном нажатии кнопки "Ластик".
+        Активирует счетчик нажатий. Значение счетчика  НЕЧЕТНОЕ - кнопка активирована. Цвет чернил соответствует
+        цвету канваса. Значение счетчика  ЧЕТНОЕ - кнопка дезактивирована. Цвет чернил соответствует цвету,
+        действующему до момента активации кнопки "ЛАСТИК"
+
+        """
+
         self.clicks += 1
         if self.clicks % 2 == 0:
             self.pen_color = self.pen_color_in
@@ -88,15 +95,21 @@ class DrawingApp:
         self.pen_color = self.pen_color_in
 
     def pick_color(self, event):
+        """ Эта функция вызывается при однократном нажатии ПРАВОЙ кнопки мышки.
+
+        Переназначает цвет чернил пера по соответствующему пикселю канваса, на который (пиксель) указывает курсор.
+
+        При этом, кнопка "ЛАСТИК" переводится в дезактивированное состояние.
+        """
         r = '';  g = ''; b = ''
 
-        self.clicks = 0
+        self.clicks = 0   # кнопка "ЛАСТИК" переводится в дезактивированное состояние
         x = event.x
         y = event.y
 
-        r_g_b = self.image.getpixel((x, y))
+        r_g_b = self.image.getpixel((x, y))  # получаем кортеж трех целых чисел, например (255, 0, 0) КРАСНЫЙ
         for i in range(3):
-            x = str(hex(r_g_b[i]))
+            x = str(hex(r_g_b[i]))   # преобразуем полученные значения в шестнадцатиричную систему, приводим к строке
             if len(x) == 3:
                 x = x + '0'
             x = x[2:4]
@@ -106,7 +119,7 @@ class DrawingApp:
                 g = x
             else:
                 b = x
-        r_g_b = '#' + r + g + b
+        r_g_b = '#' + r + g + b     # формируем итоговую строку - значение цвета
         self.pen_color_in = r_g_b
         self.pen_color = self.pen_color_in
 
