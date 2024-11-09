@@ -65,6 +65,7 @@
 Метод choose_color(self)
 
 Открывает стандартное диалоговое окно выбора цвета и устанавливает выбранный цвет как текущий для кисти.
+![Выбор цвета кисти](https://github.com/MikhinGB/graphical_interface/blob/main/png5.png)
 
 
 
