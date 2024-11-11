@@ -30,6 +30,10 @@ class DrawingApp:
 
         self.canvas.bind('<Button-3>', self.pick_color)
 
+        self.root.bind('<Control-s>', self.save_image)
+        self.root.bind('<Control-c>', self.choose_color)
+
+
     def setup_ui(self):
         control_frame = tk.Frame(self.root)
         control_frame.pack(fill=tk.X)
@@ -57,6 +61,12 @@ class DrawingApp:
         self.brush_size_menu.pack(side=tk.LEFT)
 
     def paint(self, event):
+        """ Функция вызывается при движении мыши с нажатой левой кнопкой по холсту. Она рисует линии на холсте Tkinter
+        и параллельно на объекте Image из Pillow:
+        - event: Событие содержит координаты мыши, которые используются для рисования.
+        - Линии рисуются между текущей и последней зафиксированной позициями курсора, что создает непрерывное
+        изображение."""
+
         if self.last_x and self.last_y:
             self.canvas.create_line(self.last_x, self.last_y, event.x, event.y,
                                     width=self.brush_size_scale.get(), fill=self.pen_color,
@@ -82,14 +92,23 @@ class DrawingApp:
             self.pen_color = self.canvas_color
 
     def reset(self, event):
+        """ Сбрасывает последние координаты кисти. Это необходимо для корректного начала новой линии после того,
+        как пользователь отпустил кнопку мыши и снова начал рисовать."""
+
         self.last_x, self.last_y = None, None
 
     def clear_canvas(self):
+        """ Эта функция вызывается при однократном нажатии кнопки "Очистить".
+        Очищает холст, удаляя все нарисованное, и пересоздает объекты Image и ImageDraw для нового изображения."""
+
         self.canvas.delete("all")
         self.image = Image.new("RGB", (600, 400), "white")
         self.draw = ImageDraw.Draw(self.image)
 
-    def choose_color(self):
+    def choose_color(self, event):
+        """ Эта функция вызывается при однократном нажатии кнопки "Выбрать цвет" или горячими клавишами "Control-c".
+        Открывает стандартное диалоговое окно выбора цвета и устанавливает выбранный цвет как текущий для кисти."""
+
         self.clicks = 0
         self.pen_color_in = colorchooser.askcolor(color=self.pen_color_in)[1]
         self.pen_color = self.pen_color_in
@@ -123,7 +142,11 @@ class DrawingApp:
         self.pen_color_in = r_g_b
         self.pen_color = self.pen_color_in
 
-    def save_image(self):
+    def save_image(self, event):
+        """ Эта функция вызывается при однократном нажатии кнопки "Сохранить" или горячими клавишами "Control-s".
+        Позволяет пользователю сохранить изображение, используя стандартное диалоговое окно для сохранения файла.
+        Поддерживает только формат PNG. В случае успешного сохранения выводится сообщение об успешном сохранении."""
+
         file_path = filedialog.asksaveasfilename(filetypes=[('PNG files', '*.png')])
         if file_path:
             if not file_path.endswith('.png'):
