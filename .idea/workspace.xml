@@ -4,7 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="fa0f3269-8612-4709-95c9-1a196c6c7e9a" name="Changes" comment="091124_1">
+    <list default="true" id="fa0f3269-8612-4709-95c9-1a196c6c7e9a" name="Changes" comment="111124_2">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/drawing_app.py" beforeDir="false" afterPath="$PROJECT_DIR$/drawing_app.py" afterDir="false" />
     </list>
@@ -44,7 +44,7 @@
     "settings.editor.selected.configurable": "com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable"
   }
 }]]></component>
-  <component name="RunManager" selected="Python.drawing_app">
+  <component name="RunManager" selected="Python.probe">
     <configuration name="drawing_app — копия" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="graphical_interface" />
       <option name="ENV_FILES" value="" />
@@ -157,8 +157,8 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Python.drawing_app" />
         <item itemvalue="Python.probe" />
+        <item itemvalue="Python.drawing_app" />
         <item itemvalue="Python.drawing_app 2" />
         <item itemvalue="Python.drawing_app — копия" />
         <item itemvalue="Python.probe2" />
@@ -221,7 +221,23 @@
       <option name="project" value="LOCAL" />
       <updated>1731159718840</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="111124_1">
+      <option name="closed" value="true" />
+      <created>1731343219597</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1731343219623</updated>
+    </task>
+    <task id="LOCAL-00007" summary="111124_2">
+      <option name="closed" value="true" />
+      <created>1731343534920</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1731343534920</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
@@ -229,6 +245,8 @@
     <MESSAGE value="081124_1" />
     <MESSAGE value="081124_2" />
     <MESSAGE value="091124_1" />
-    <option name="LAST_COMMIT_MESSAGE" value="091124_1" />
+    <MESSAGE value="111124_1" />
+    <MESSAGE value="111124_2" />
+    <option name="LAST_COMMIT_MESSAGE" value="111124_2" />
   </component>
 </project>
