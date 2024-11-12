@@ -1,5 +1,5 @@
 import tkinter as tk
-from tkinter import colorchooser, filedialog, messagebox, OptionMenu
+from tkinter import colorchooser, filedialog, messagebox, OptionMenu, Label
 from PIL import Image, ImageDraw
 
 
@@ -33,7 +33,6 @@ class DrawingApp:
         self.root.bind('<Control-s>', self.save_image)
         self.root.bind('<Control-c>', self.choose_color)
 
-
     def setup_ui(self):
         control_frame = tk.Frame(self.root)
         control_frame.pack(fill=tk.X)
@@ -41,7 +40,7 @@ class DrawingApp:
         clear_button = tk.Button(control_frame, text="Очистить", command=self.clear_canvas)
         clear_button.pack(side=tk.LEFT)
 
-        color_button = tk.Button(control_frame, text="Выбрать цвет", command=self.choose_color)
+        color_button = tk.Button(control_frame, text="Выбрать цвет", command=self.choose_color_buton)
         color_button.pack(side=tk.LEFT)
 
         save_button = tk.Button(control_frame, text="Сохранить", command=self.save_image)
@@ -56,9 +55,13 @@ class DrawingApp:
         sizes = [1, 2, 5, 10]
 
         self.brush_size_menu = OptionMenu(control_frame,
-                                             self.brush_size_scale,
-                                             *sizes)
+                                          self.brush_size_scale,
+                                          *sizes)
         self.brush_size_menu.pack(side=tk.LEFT)
+
+        self.lbl_color = Label(control_frame, text="ink")
+        self.lbl_color.configure(bg="black")
+        self.lbl_color.pack(side=tk.LEFT)
 
     def paint(self, event):
         """ Функция вызывается при движении мыши с нажатой левой кнопкой по холсту. Она рисует линии на холсте Tkinter
@@ -105,13 +108,23 @@ class DrawingApp:
         self.image = Image.new("RGB", (600, 400), "white")
         self.draw = ImageDraw.Draw(self.image)
 
-    def choose_color(self, event):
-        """ Эта функция вызывается при однократном нажатии кнопки "Выбрать цвет" или горячими клавишами "Control-c".
+    def choose_color_buton(self):
+        """ Эта функция вызывается при однократном нажатии кнопки "Выбрать цвет".
         Открывает стандартное диалоговое окно выбора цвета и устанавливает выбранный цвет как текущий для кисти."""
 
         self.clicks = 0
         self.pen_color_in = colorchooser.askcolor(color=self.pen_color_in)[1]
         self.pen_color = self.pen_color_in
+        self.lbl_color.configure(bg=self.pen_color)
+
+    def choose_color(self, event):
+        """ Эта функция вызывается  горячими клавишами "Control-c".
+        Открывает стандартное диалоговое окно выбора цвета и устанавливает выбранный цвет как текущий для кисти."""
+
+        self.clicks = 0
+        self.pen_color_in = colorchooser.askcolor(color=self.pen_color_in)[1]
+        self.pen_color = self.pen_color_in
+        self.lbl_color.configure(bg=self.pen_color)
 
     def pick_color(self, event):
         """ Эта функция вызывается при однократном нажатии ПРАВОЙ кнопки мышки.
@@ -120,27 +133,16 @@ class DrawingApp:
 
         При этом, кнопка "ЛАСТИК" переводится в дезактивированное состояние.
         """
-        r = '';  g = ''; b = ''
 
-        self.clicks = 0   # кнопка "ЛАСТИК" переводится в дезактивированное состояние
+        self.clicks = 0  # кнопка "ЛАСТИК" переводится в дезактивированное состояние
         x = event.x
         y = event.y
 
         r_g_b = self.image.getpixel((x, y))  # получаем кортеж трех целых чисел, например (255, 0, 0) КРАСНЫЙ
-        for i in range(3):
-            x = str(hex(r_g_b[i]))   # преобразуем полученные значения в шестнадцатиричную систему, приводим к строке
-            if len(x) == 3:
-                x = x + '0'
-            x = x[2:4]
-            if i == 0:
-                r = x
-            elif i == 1:
-                g = x
-            else:
-                b = x
-        r_g_b = '#' + r + g + b     # формируем итоговую строку - значение цвета
-        self.pen_color_in = r_g_b
+
+        self.pen_color_in = self.get_rgb(r_g_b)
         self.pen_color = self.pen_color_in
+        self.lbl_color.configure(bg=self.pen_color)
 
     def save_image(self, event):
         """ Эта функция вызывается при однократном нажатии кнопки "Сохранить" или горячими клавишами "Control-s".
@@ -154,6 +156,10 @@ class DrawingApp:
             self.image.save(file_path)
             messagebox.showinfo("Информация", "Изображение успешно сохранено!")
 
+    def get_rgb(self, rgb):
+        """  Функция преобразует (конвертирует) кортеж трех целых чисел RGB-составляющих, например (255, 0, 0) КРАСНЫЙ в
+        шестнадцатеричный код цвета в формате #RRGGBB """
+        return "#%02x%02x%02x" % rgb
 
 def main():
     root = tk.Tk()
