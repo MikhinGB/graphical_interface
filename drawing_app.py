@@ -1,5 +1,6 @@
 import tkinter as tk
 from tkinter import colorchooser, filedialog, messagebox, OptionMenu, Label
+from tkinter.simpledialog import askinteger
 from PIL import Image, ImageDraw
 
 
@@ -16,7 +17,9 @@ class DrawingApp:
         self.draw = ImageDraw.Draw(self.image)
 
         self.canvas_color = 'white'
-        self.canvas = tk.Canvas(root, width=600, height=400, bg=self.canvas_color)
+        self.width = 600
+        self.height = 400
+        self.canvas = tk.Canvas(root, width=self.width, height=self.height, bg=self.canvas_color)
         self.canvas.pack()
 
         self.setup_ui()
@@ -29,6 +32,7 @@ class DrawingApp:
         self.canvas.bind('<ButtonRelease-1>', self.reset)
 
         self.canvas.bind('<Button-3>', self.pick_color)
+
 
         self.root.bind('<Control-s>', self.save_image)
         self.root.bind('<Control-c>', self.choose_color)
@@ -48,6 +52,10 @@ class DrawingApp:
 
         self.eraser_button = tk.Button(control_frame, text="Ластик", command=self.erase)
         self.eraser_button.pack(side=tk.RIGHT)
+
+        self.canvas_sizes_button = tk.Button(control_frame, text=f"Холст {self.width}x{self.height}",
+                                             command=self.canvas_resize)
+        self.canvas_sizes_button.pack(side=tk.RIGHT)
 
         self.brush_size_scale = tk.Scale(control_frame, from_=1, to=10, orient=tk.HORIZONTAL)
         self.brush_size_scale.pack(side=tk.LEFT)
@@ -125,6 +133,22 @@ class DrawingApp:
         self.pen_color_in = colorchooser.askcolor(color=self.pen_color_in)[1]
         self.pen_color = self.pen_color_in
         self.lbl_color.configure(bg=self.pen_color)
+
+    def canvas_resize(self):
+        """ Эта функция вызывается нажатием кнопки "Холст w * h".
+                Открывает стандартное диалоговое окно выбора ширины холста. После нажатия кнопки "ОК" открывается
+                стандартное диалоговое окно выбора высоты холста. После нажатия кнопки "ОК" холст изменяется
+                 в размерах в соответствии с введенными значениями.
+                 На кнопке "Холст w * h"  отражаются новые значения размеров ширины и высоты холста"""
+        size_image = ()
+        self.width = askinteger("Ширина", "Целое, pix")
+        size_image += (self.width,)
+        self.height = askinteger("Высота", "Целое, pix")
+        size_image += (self.height,)
+        self.image = Image.new("RGB", size=size_image, color='white')
+        self.draw = ImageDraw.Draw(self.image)
+        self.canvas.config(width=self.width, height=self.height)
+        self.canvas_sizes_button.configure(text=f"Холст {self.width}x{self.height}")
 
     def pick_color(self, event):
         """ Эта функция вызывается при однократном нажатии ПРАВОЙ кнопки мышки.
