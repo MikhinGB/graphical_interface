@@ -1,7 +1,7 @@
 import tkinter as tk
-from tkinter import colorchooser, filedialog, messagebox, OptionMenu, Label
-from tkinter.simpledialog import askinteger
-from PIL import Image, ImageDraw
+from tkinter import colorchooser, filedialog, messagebox, OptionMenu, Label, Text
+from tkinter.simpledialog import askinteger, askstring
+from PIL import Image, ImageDraw, ImageFont
 
 
 class DrawingApp:
@@ -34,6 +34,7 @@ class DrawingApp:
         self.canvas.bind('<Button-3>', self.pick_color)
 
 
+
         self.root.bind('<Control-s>', self.save_image)
         self.root.bind('<Control-c>', self.choose_color)
 
@@ -44,8 +45,14 @@ class DrawingApp:
         clear_button = tk.Button(control_frame, text="Очистить", command=self.clear_canvas)
         clear_button.pack(side=tk.LEFT)
 
-        color_button = tk.Button(control_frame, text="Выбрать цвет", command=self.choose_color_buton)
+        color_button = tk.Button(control_frame, text="Выбрать цвет", command=self.choose_color_button)
         color_button.pack(side=tk.LEFT)
+
+        color_canvas_button = tk.Button(control_frame, text="Изменить фон", command=self.change_canvas_color)
+        color_canvas_button.pack(side=tk.LEFT)
+
+        text_button = tk.Button(control_frame, text="Текст", command=self.create_text_user)
+        text_button.pack(side=tk.LEFT)
 
         save_button = tk.Button(control_frame, text="Сохранить", command=self.save_image)
         save_button.pack(side=tk.LEFT)
@@ -116,7 +123,7 @@ class DrawingApp:
         self.image = Image.new("RGB", (600, 400), "white")
         self.draw = ImageDraw.Draw(self.image)
 
-    def choose_color_buton(self):
+    def choose_color_button(self):
         """ Эта функция вызывается при однократном нажатии кнопки "Выбрать цвет".
         Открывает стандартное диалоговое окно выбора цвета и устанавливает выбранный цвет как текущий для кисти."""
 
@@ -134,17 +141,39 @@ class DrawingApp:
         self.pen_color = self.pen_color_in
         self.lbl_color.configure(bg=self.pen_color)
 
+    def create_text_user(self):
+        """ Эта функция вызывается при однократном нажатии кнопки "Текст".
+        Открывает стандартное диалоговое окно выбора цвета и устанавливает выбранный цвет как текущий фон."""
+        self.user_text = askstring('Ввод текста', 'подсказка')
+        self.canvas.bind('<Button-1>', self.text_placement)
+
+    def text_placement(self, event):
+
+        x = event.x
+        y = event.y
+        fnt = ImageFont.truetype("FreeMono.ttf", 40)
+        self.canvas.create_text(x, y, text=self.user_text, fill=self.pen_color)
+        self.draw.text((x, y), self.user_text, font=fnt, fill=self.pen_color)
+
+    def change_canvas_color(self):
+        """ Эта функция вызывается при однократном нажатии кнопки "Изменить фон".
+                Открывает стандартное диалоговое окно выбора цвета и устанавливает выбранный цвет как текущий фон."""
+
+        self.canvas_color = colorchooser.askcolor(color=self.canvas_color)[1]
+        self.canvas.configure(bg=self.canvas_color)
+
     def canvas_resize(self):
         """ Эта функция вызывается нажатием кнопки "Холст w * h".
                 Открывает стандартное диалоговое окно выбора ширины холста. После нажатия кнопки "ОК" открывается
-                стандартное диалоговое окно выбора высоты холста. После нажатия кнопки "ОК" холст изменяется
-                 в размерах в соответствии с введенными значениями.
-                 На кнопке "Холст w * h"  отражаются новые значения размеров ширины и высоты холста"""
+                стандартное диалоговое окно выбора высоты холста. После нажатия кнопки "ОК" холст изменяется в размерах
+                в соответствии с введенными значениями. На кнопке "Холст w * h"  отражаются  новые значения  размеров
+                ширины и высоты холста"""
         size_image = ()
         self.width = askinteger("Ширина", "Целое, pix")
         size_image += (self.width,)
         self.height = askinteger("Высота", "Целое, pix")
         size_image += (self.height,)
+
         self.image = Image.new("RGB", size=size_image, color='white')
         self.draw = ImageDraw.Draw(self.image)
         self.canvas.config(width=self.width, height=self.height)
